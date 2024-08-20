@@ -1,0 +1,49 @@
+[] Dice module
+    [] `roll` method, only exposed endpoint
+        [] parses dice expression using regex
+        [] rolls dice using Math.random and stores results as array
+        [] adds bonus(es) if applicable
+        [] returns diceRoll obj with:
+            [] array of dice results
+            [] bonus
+            [] total
+
+[] Minions module
+    [] Built using composition instead of inheritance (refresh on subject)
+    [] Minions objs will require entries for:
+        [] ID
+        [] Name
+        [] Type
+        [] AC
+        [] Base HP (expression)
+        [] Max HP (evaluated expression^)
+        [] Proficency
+        [] Speed
+        [] STR
+        [] DEX
+        [] CON
+        [] INT
+        [] WIS
+        [] CHA
+        [] Attacks arr of objs
+        [] makeAttack(attack) method
+            [] Optional maxAC, minAC args if known 
+                [] if null, tries to determine enemy AC based on hits/misses
+        [] abilityCheck(stat, isSave, isProficient) method
+    [] Different minion types
+        [] Zombie
+        [] Skeleton
+        [] Ghoul
+        [] Ghast
+        [] Wight
+        [] Mummy
+        [] Improvised
+    [] createMinion() factory func
+    [] removeMinion(minionID) func
+    [] createImprovisedMinion() factory func (will need to generate dialogs)
+    [] equipWeapon(Minion) func
+        [] only works if Minion.canUseWeapons === true
+    [] removeWeapon(Minion) func
+    [] equipArmor(Minion) method
+        [] only works if Minion.canUseArmor === true
+    [] removeArmor(Minion) method
