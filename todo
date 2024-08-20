@@ -1,15 +1,16 @@
-[] Dice module
-    [] `roll` method, only exposed endpoint
-        [] parses dice expression using regex
-        [] rolls dice using Math.random and stores results as array
-        [] adds bonus(es) if applicable
-        [] returns diceRoll obj with:
-            [] array of dice results
-            [] bonus
-            [] total
+[x] Dice module
+    [x] `roll` method, only exposed endpoint
+        [x] parses dice expression using regex
+        [x] rolls dice using Math.random and stores results as array
+        [x] adds bonus(es) if applicable
+        [x] returns diceRoll obj with:
+            [x] array of dice results
+            [x] bonus
+            [x] total
 
 [] Minions module
-    [] Built using composition instead of inheritance (refresh on subject)
+    [] Built using composition instead of inheritance 
+        [] refresh on subject
     [] Minions objs will require entries for:
         [] ID
         [] Name
