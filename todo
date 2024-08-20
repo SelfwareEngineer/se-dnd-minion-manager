@@ -14,7 +14,6 @@
     [] Minions objs will require entries for:
         [] ID
         [] Name
-        [] Type
         [] AC
         [] Base HP (expression)
         [] Max HP (evaluated expression^)
