@@ -2,21 +2,49 @@
 import "./style.css";
 import * as minions from "./modules/minions.js";
 
-console.log("test");
+function batchAttack(minionArr, target) {
+  let damageRecord = {};
+  let totalDamage = {};
 
-const bob = minions.zombie("Bob");
+  for (const minion of minionArr) {
+    const minionDamage = minion.makeAttack(
+      minion.attacks[minion.selectedAttack],
+      target,
+    );
 
-console.log(bob);
+    if (minionDamage) {
+      damageRecord[minion.name] = minionDamage;
 
-const testDamage = {
-  poison: { rolls: [0], bonus: 99, total: 99 },
-  bludgeoning: { rolls: [0], bonus: 99, total: 99 },
-};
+      for (const damageType in minionDamage) {
+        if (!totalDamage[damageType]) {
+          totalDamage[damageType] = 0;
+        }
 
-bob.takeDamage(testDamage);
+        totalDamage[damageType] += minionDamage[damageType].total;
+      }
+    } else {
+      damageRecord[minion.name] = "miss";
+    }
+  }
 
-const steve = minions.skeleton("Steve");
+  console.log(damageRecord);
+  console.log(totalDamage);
+}
 
-console.log(steve);
+function runTests() {
+  const zombie = minions.zombie;
+  const minionArr = [
+    zombie("Bob"),
+    zombie("Jim"),
+    zombie("Frank"),
+    zombie("Billy"),
+  ];
 
-steve.takeDamage(testDamage);
+  const steve = minions.skeleton("Steve");
+
+  console.log(steve);
+
+  batchAttack(minionArr, steve);
+}
+
+runTests();

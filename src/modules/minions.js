@@ -5,10 +5,10 @@ const minion = () => ({
   makeAttack: function (attack, target) {
     const attackRoll = getAttackRoll(this, attack);
 
-    if (attackRoll < target.minArmorClass) {
+    if (attackRoll.total < target.minArmorClass) {
       console.log(this.name + " missed.");
       return;
-    } else if (attackRoll >= target.maxArmorClass) {
+    } else if (attackRoll.total >= target.maxArmorClass) {
       return getDamage(attack.damage);
     } else {
       let isAHit = prompt(
@@ -27,7 +27,7 @@ const minion = () => ({
         return getDamage(attack.damage);
       } else {
         target.minArmorClass = attackRoll.total + 1;
-        return;
+        return null;
       }
     }
   },
@@ -97,6 +97,7 @@ const zombie = (name) => {
         },
       },
     },
+    selectedAttack: "slam",
     features: {
       undeadFortitude:
         "If damage reduces the zombie to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a success, the zombie drops to 1 hit point instead.",
@@ -187,7 +188,7 @@ function getMinionID() {
 }
 
 function getAttackRoll(entity, attack) {
-  const attackModifier = getModifier(entity[attack.type]);
+  const attackModifier = getModifier(entity.stats[attack.type]);
   let totalBonus;
 
   if (attack.isProficient) {
