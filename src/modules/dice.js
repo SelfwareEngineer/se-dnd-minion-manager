@@ -6,9 +6,9 @@ function roll(expressionStr) {
   const bonus = expressionObj.bonus;
   let total = 0;
 
-  for (let i = 0; i <= expressionObj.numberOfDice; i++) {
+  for (let i = 0; i < expressionObj.numberOfDice; i++) {
     const result = Math.ceil(Math.random() * expressionObj.numberOfSides);
-    rolls += result;
+    rolls.push(result);
     total += result;
   }
 
