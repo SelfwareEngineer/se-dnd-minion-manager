@@ -62,14 +62,17 @@ const minion = () => ({
 });
 
 const zombie = (name) => {
-  const maxHP = dice.roll("3d8+9");
+  const hpRoll = dice.roll("3d8+9");
+  console.log(
+    `${name} has spawned with ${hpRoll.total} hit points (${hpRoll.rolls} + ${hpRoll.bonus})`,
+  );
 
   let newZombie = {
     id: "z-" + getMinionID(),
     name,
     armorClass: 8,
-    maxHP,
-    currentHP: maxHP,
+    maxHP: hpRoll.total,
+    currentHP: hpRoll.total,
     proficiency: 2,
     speed: 20,
     stats: {
