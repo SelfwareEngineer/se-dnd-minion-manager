@@ -33,7 +33,7 @@ const minion = () => ({
   },
 
   makeAbilityCheck: function (stat, isProficient) {
-    let bonus = getModifier(this[stat]);
+    let bonus = getModifier(this.stats[stat]);
 
     if (isProficient) {
       bonus += this.proficiency;
@@ -49,15 +49,20 @@ const minion = () => ({
     }
   },
 
-  takeDamage: function (damageTaken) {
-    this.currentHP -= damageTaken;
-    if (this.currentHP <= 0) {
-      this.die();
+  takeDamage: function (damageResult) {
+    let totalDamage = 0;
+    for (const damageType in damageResult) {
+      totalDamage += damageResult[damageType].total;
     }
+    this.currentHP -= totalDamage;
+    this.checkIfDead();
   },
 
-  die: function () {
-    this.dead = true;
+  checkIfDead: function () {
+    if (this.currentHP <= 0) {
+      console.log(this.name + " has died.");
+      this.dead = true;
+    }
   },
 });
 
@@ -97,15 +102,31 @@ const zombie = (name) => {
         "If damage reduces the zombie to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a success, the zombie drops to 1 hit point instead.",
     },
 
-    takeDamage: function (damageTaken) {
-      this.currentHP -= damageTaken;
+    takeDamage: function (damageResult) {
+      let totalDamage = 0;
+
+      for (const damageType in damageResult) {
+        // this might be buggy, if so maybe double == will work?
+        if (damageType === "poison") {
+          console.log(this.name + " is immune to poison!");
+        } else {
+          totalDamage += damageResult[damageType].total;
+        }
+      }
+
+      this.currentHP -= totalDamage;
+      this.checkIfDead(totalDamage);
+    },
+
+    checkIfDead: function (totalDamage) {
       if (this.currentHP <= 0) {
-        const saveDC = damageTaken + 5;
+        const saveDC = totalDamage + 5;
         const save = this.makeAbilityCheck("constitution", false);
         if (save >= saveDC) {
           this.currentHP = 1;
         } else {
-          this.die();
+          console.log(this.name + " has died.");
+          this.dead = true;
         }
       }
     },
@@ -135,11 +156,16 @@ function getModifier(abilityScore) {
   return Math.floor((abilityScore - 10) / 2);
 }
 
-function getDamage(damageObj) {
-  let result = {};
-  for (const damageType in damageObj) {
-    result[damageType] = dice.roll(damageObj[damageType]);
+function getDamage(damageStats) {
+  let damageResult = {};
+  for (const damageType in damageStats) {
+    damageResult[damageType] = dice.roll(damageStats[damageType]);
   }
+  return damageResult;
+}
+
+function getResistantDamage(num) {
+  return Math.floor(num / 2);
 }
 
 function parseBonus(bonusNum) {
