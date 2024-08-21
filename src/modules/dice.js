@@ -1,7 +1,18 @@
 "use strict";
 
-function roll(expressionStr) {
+function roll(expressionStr, isCrit = false) {
   const expressionObj = parseExpressionStr(expressionStr);
+
+  if (expressionObj.numberOfSides === 20 && expressionObj.numberOfDice > 1) {
+    throw new Error(
+      "Error: dice.roll() only accepts 1 d20 at a time. For advantage and disadvantage, use rollAdvantage() and rollDisadvantage().",
+    );
+  }
+
+  if (isCrit) {
+    expressionObj.numberOfDice *= 2;
+  }
+
   let rolls = [];
   const bonus = expressionObj.bonus;
   let total = 0;
@@ -13,12 +24,18 @@ function roll(expressionStr) {
   }
 
   total += bonus;
-
-  return {
+  let rollRecord = {
     rolls,
     bonus,
     total,
   };
+
+  if (expressionObj.numberOfSides === 20) {
+    const isCrit = rolls[0] === 20;
+    rollRecord.isCrit = isCrit;
+  }
+
+  return rollRecord;
 }
 
 function parseExpressionStr(expressionStr) {

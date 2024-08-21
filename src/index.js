@@ -33,14 +33,13 @@ function batchAttack(minionArr, target) {
 
 function runTests() {
   const zombie = minions.zombie;
-  const minionArr = [
-    zombie("Bob"),
-    zombie("Jim"),
-    zombie("Frank"),
-    zombie("Billy"),
-  ];
+  const minionArr = [];
 
-  const steve = minions.skeleton("Steve");
+  for (let i = 0; i < 100; i++) {
+    minionArr.push(zombie("Zombie" + (i + 1)));
+  }
+
+  const steve = minions.enemy("Steve");
 
   console.log(steve);
 

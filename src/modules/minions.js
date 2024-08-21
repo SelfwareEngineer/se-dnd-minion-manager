@@ -4,12 +4,17 @@ import * as dice from "./dice.js";
 const minion = () => ({
   makeAttack: function (attack, target) {
     const attackRoll = getAttackRoll(this, attack);
+    const isCrit = attackRoll.isCrit;
+
+    if (isCrit) {
+      console.log(this.name + " crits!");
+    }
 
     if (attackRoll.total < target.minArmorClass) {
       console.log(this.name + " missed.");
       return;
     } else if (attackRoll.total >= target.maxArmorClass) {
-      return getDamage(attack.damage);
+      return getDamage(attack.damage, isCrit);
     } else {
       let isAHit = prompt(
         "Does a " + attackRoll.total + " hit? (y/n)",
@@ -24,10 +29,10 @@ const minion = () => ({
 
       if (isAHit === "y") {
         target.maxArmorClass = attackRoll.total;
-        return getDamage(attack.damage);
+        return getDamage(attack.damage, isCrit);
       } else {
         target.minArmorClass = attackRoll.total + 1;
-        return null;
+        return;
       }
     }
   },
@@ -183,6 +188,11 @@ const skeleton = (name) => {
   return Object.assign(minion(), newSkeleton);
 };
 
+const enemy = (name) => ({
+  maxArmorClass: 99,
+  minArmorClass: 0,
+});
+
 function getMinionID() {
   return Date.now() + (Math.random() * 2000 - 1000);
 }
@@ -204,10 +214,10 @@ function getModifier(abilityScore) {
   return Math.floor((abilityScore - 10) / 2);
 }
 
-function getDamage(damageStats) {
+function getDamage(damageStats, isCrit = false) {
   let damageResult = {};
   for (const damageType in damageStats) {
-    damageResult[damageType] = dice.roll(damageStats[damageType]);
+    damageResult[damageType] = dice.roll(damageStats[damageType], isCrit);
   }
   return damageResult;
 }
@@ -228,4 +238,4 @@ function parseBonus(bonusNum) {
   return bonusStr;
 }
 
-export { zombie, skeleton };
+export { zombie, skeleton, enemy };
