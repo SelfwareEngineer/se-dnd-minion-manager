@@ -14,3 +14,9 @@ const testDamage = {
 };
 
 bob.takeDamage(testDamage);
+
+const steve = minions.skeleton("Steve");
+
+console.log(steve);
+
+steve.takeDamage(testDamage);

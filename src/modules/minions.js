@@ -135,6 +135,53 @@ const zombie = (name) => {
   return Object.assign(minion(), newZombie);
 };
 
+const skeleton = (name) => {
+  const hpRoll = dice.roll("2d8+4");
+  console.log(
+    `${name} has spawned with ${hpRoll.total} hit points (${hpRoll.rolls} + ${hpRoll.bonus})`,
+  );
+
+  let newSkeleton = {
+    id: "s-" + getMinionID(),
+    name,
+    armorClass: 13,
+    maxHP: hpRoll.total,
+    currentHP: hpRoll.total,
+    proficiency: 2,
+    speed: 30,
+    stats: {
+      strength: 10,
+      dexterity: 14,
+      constitution: 15,
+      intelligence: 6,
+      wisdom: 8,
+      charisma: 5,
+    },
+    attacks: {},
+
+    takeDamage: function (damageResult) {
+      let totalDamage = 0;
+
+      for (const damageType in damageResult) {
+        // this might be buggy, if so maybe double == will work?
+        if (damageType === "poison") {
+          console.log(this.name + " is immune to poison!");
+        } else if (damageType === "bludgeoning") {
+          console.log(this.name + " is vulnerable to bludgeoning!");
+          totalDamage += damageResult[damageType].total * 2;
+        } else {
+          totalDamage += damageResult[damageType].total;
+        }
+      }
+
+      this.currentHP -= totalDamage;
+      this.checkIfDead(totalDamage);
+    },
+  };
+
+  return Object.assign(minion(), newSkeleton);
+};
+
 function getMinionID() {
   return Date.now() + (Math.random() * 2000 - 1000);
 }
@@ -180,4 +227,4 @@ function parseBonus(bonusNum) {
   return bonusStr;
 }
 
-export { zombie };
+export { zombie, skeleton };
