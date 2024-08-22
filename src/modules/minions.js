@@ -189,7 +189,7 @@ const skeleton = (name) => {
 };
 
 function getMinionID() {
-  return Date.now() + (Math.random() * 2000 - 1000);
+  return Date.now() + Math.floor(Math.random() * 2000 - 1000);
 }
 
 function getAttackRoll(entity, attack, rollType = null) {
