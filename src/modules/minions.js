@@ -188,11 +188,6 @@ const skeleton = (name) => {
   return Object.assign(minion(), newSkeleton);
 };
 
-const enemy = (name) => ({
-  maxArmorClass: 99,
-  minArmorClass: 0,
-});
-
 function getMinionID() {
   return Date.now() + (Math.random() * 2000 - 1000);
 }
@@ -238,4 +233,4 @@ function parseBonus(bonusNum) {
   return bonusStr;
 }
 
-export { zombie, skeleton, enemy };
+export { zombie, skeleton };

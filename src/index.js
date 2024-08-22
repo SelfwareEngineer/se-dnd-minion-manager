@@ -1,6 +1,17 @@
 "use strict";
 import "./style.css";
 import * as minions from "./modules/minions.js";
+import * as enemy from "./modules/enemy.js";
+
+let minionArr = [];
+
+function spawnZombie(name) {
+  minionArr.push(minions.zombie(name));
+}
+
+function spawnSkeleton(name) {
+  minionArr.push(minions.skeleton(name));
+}
 
 function batchAttack(minionArr, target) {
   let damageRecord = {};
@@ -35,11 +46,11 @@ function runTests() {
   const zombie = minions.zombie;
   const minionArr = [];
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 8; i++) {
     minionArr.push(zombie("Zombie" + (i + 1)));
   }
 
-  const steve = minions.enemy("Steve");
+  const steve = enemy.enemy("Steve");
 
   console.log(steve);
 
