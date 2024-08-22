@@ -23,9 +23,9 @@ function roll(expressionStr, isCrit = false, rollType = null) {
   }
 
   if (rollType) {
-    return getRollRecordStandard(expressionObj);
-  } else {
     return getRollRecordAdvantage(expressionObj, rollType);
+  } else {
+    return getRollRecordStandard(expressionObj);
   }
 }
 
