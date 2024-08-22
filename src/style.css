@@ -94,3 +94,12 @@ input:focus-visible {
 /* --------------------------------------------------- */
 /*                   END OF RESET                      */
 /* --------------------------------------------------- */
+
+.minion-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.minion {
+  padding: 1rem;
+}

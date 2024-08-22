@@ -3,18 +3,51 @@ import "./style.css";
 import * as minions from "./modules/minions.js";
 import * as enemy from "./modules/enemy.js";
 
-const allMinions = {};
-const allEnemies = {};
-const selectedMinions = [];
+let allMinions = {};
+let allEnemies = {};
+let selectedMinions = [];
+let minionCount = 0;
 
 function spawnMinion(type, name) {
   const newMinion = minions[type](name);
   allMinions[newMinion.id] = newMinion;
+  updateMinionList();
 }
 
 function spawnEnemy(name) {
   const newEnemy = enemy.enemy(name);
   allEnemies[newEnemy.id] = newEnemy;
+}
+
+function updateMinionList() {
+  const minionList = document.querySelector('[data-id="minionList"]');
+
+  while (minionList.hasChildNodes()) {
+    minionList.removeChild(minionList.firstChild);
+  }
+
+  for (const minionID in allMinions) {
+    const minion = allMinions[minionID];
+
+    const minionDisplay = document.createElement("div");
+    minionDisplay.classList += "minion";
+    minionList.appendChild(minionDisplay);
+
+    const minionName = document.createElement("h3");
+    minionName.textContent = minion.name;
+    minionDisplay.appendChild(minionName);
+
+    const selectButton = document.createElement("button");
+    selectButton.type = "button";
+    selectButton.textContent = "Select";
+    selectButton.classList += "select-button";
+    selectButton.dataset.id = "selectButton";
+    selectButton.addEventListener("click", () => {
+      selectMinion(minion.name);
+      selectButton.style.backgroundColor = "hsl(91, 25%, 31%)";
+    });
+    minionDisplay.appendChild(selectButton);
+  }
 }
 
 function getMinionID(name) {
@@ -35,12 +68,13 @@ function getEnemyID(name) {
   }
 }
 
-function selectMinions(minionArr) {
-  selectedMinions = [];
-  for (const minion of minionArr) {
-    selectedMinions.push(minion);
-  }
+function selectMinion(minionName) {
+  selectedMinions.push(minionName);
   console.log("Selected minions: " + selectedMinions);
+}
+
+function clearMinionSelection() {
+  selectedMinions = [];
 }
 
 function batchAttack(target) {
@@ -73,19 +107,43 @@ function batchAttack(target) {
   console.log(totalDamage);
 }
 
-function runTests() {
-  for (let i = 0; i < 8; i++) {
-    const zombieName = "Zombie" + (i + 1);
-    spawnMinion("zombie", zombieName);
-    selectedMinions.push(zombieName);
-  }
+// function runTests() {
+//   for (let i = 0; i < 8; i++) {
+//     const zombieName = "Zombie" + (i + 1);
+//     spawnMinion("zombie", zombieName);
+//   }
+//
+spawnEnemy("testEnemy");
+//   const testEnemy = getEnemyID("testEnemy");
+//
+//   console.log(testEnemy);
+// }
 
-  spawnEnemy("steve");
-  const steve = getEnemyID("steve");
+const spawnZombieButton = document.querySelector('[data-id="spawnZombie"]');
+const spawnSkeletonButton = document.querySelector('[data-id="spawnSkeleton"]');
+const resetEnemyButton = document.querySelector('[data-id="resetEnemy"]');
+const resetSelectionButton = document.querySelector(
+  '[data-id="resetSelection"]',
+);
+const attackButton = document.querySelector('[data-id="batchAttack"]');
 
-  console.log(steve);
+spawnZombieButton.addEventListener("click", () => {
+  minionCount++;
+  spawnMinion("zombie", "Zombie" + minionCount);
+});
 
-  batchAttack(allEnemies[getEnemyID("steve")]);
-}
+spawnSkeletonButton.addEventListener("click", () => {
+  minionCount++;
+  spawnMinion("skeleton", "Skeleton" + minionCount);
+});
 
-runTests();
+// resetEnemyButton.addEventListener("click", resetEnemy);
+
+resetSelectionButton.addEventListener("click", clearMinionSelection);
+
+attackButton.addEventListener("click", () => {
+  const testEnemy = allEnemies[getEnemyID("testEnemy")];
+  batchAttack(testEnemy);
+});
+
+// runTests();
