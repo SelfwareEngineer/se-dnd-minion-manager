@@ -2,8 +2,8 @@
 import * as dice from "./dice.js";
 
 const minion = () => ({
-  makeAttack: function (attack, target) {
-    const attackRoll = getAttackRoll(this, attack);
+  makeAttack: function (attack, target, rollType = null) {
+    const attackRoll = getAttackRoll(this, attack, rollType);
     const isCrit = attackRoll.isCrit;
 
     if (isCrit) {
@@ -197,7 +197,7 @@ function getMinionID() {
   return Date.now() + (Math.random() * 2000 - 1000);
 }
 
-function getAttackRoll(entity, attack) {
+function getAttackRoll(entity, attack, rollType = null) {
   const attackModifier = getModifier(entity.stats[attack.type]);
   let totalBonus;
 
@@ -207,7 +207,7 @@ function getAttackRoll(entity, attack) {
     totalBonus = attackModifier;
   }
 
-  return dice.roll("1d20" + parseBonus(totalBonus));
+  return dice.roll("1d20" + parseBonus(totalBonus), false, rollType);
 }
 
 function getModifier(abilityScore) {

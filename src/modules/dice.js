@@ -1,6 +1,9 @@
 "use strict";
 
-function roll(expressionStr, isCrit = false) {
+//TODO:
+// - refactor this to account for d20 rolls (adv and dis)
+//      - Probably split this up into more functions to keep the code neat
+function roll(expressionStr, isCrit = false, rollType = null) {
   const expressionObj = parseExpressionStr(expressionStr);
 
   if (expressionObj.numberOfSides === 20 && expressionObj.numberOfDice > 1) {
@@ -9,10 +12,24 @@ function roll(expressionStr, isCrit = false) {
     );
   }
 
+  if (isCrit && rollType) {
+    throw new Error(
+      "Error: a roll at advantage or disadvantage can't also be a crit.",
+    );
+  }
+
   if (isCrit) {
     expressionObj.numberOfDice *= 2;
   }
 
+  if (rollType) {
+    return getRollRecordStandard(expressionObj);
+  } else {
+    return getRollRecordAdvantage(expressionObj, rollType);
+  }
+}
+
+function getRollRecordStandard(expressionObj) {
   let rolls = [];
   const bonus = expressionObj.bonus;
   let total = 0;
@@ -36,6 +53,36 @@ function roll(expressionStr, isCrit = false) {
   }
 
   return rollRecord;
+}
+
+function getRollRecordAdvantage(expressionObj, rollType) {
+  const roll1 = getRollRecordStandard(expressionObj);
+  const roll2 = getRollRecordStandard(expressionObj);
+
+  const combinedRolls = [roll1.rolls[0], roll2.rolls[0]];
+  // Doesn't matter which, I just picked roll1 because it's first
+  const bonus = roll1.bonus;
+  let total;
+  let isCrit;
+
+  if (["a", "advantage"].includes(rollType)) {
+    total = Math.max(...combinedRolls) + bonus;
+    isCrit = combinedRolls.includes(20);
+  } else if (["d", "disadvantage"].includes(rollType)) {
+    total = Math.min(...combinedRolls) + bonus;
+    isCrit = combinedRolls.every((i) => i === 20);
+  } else {
+    throw new Error(
+      'Error: getRollRecordAdvantage can only be called with a rollType of "a", "advantage", "d", or "disadvantage".',
+    );
+  }
+
+  return {
+    rolls: combinedRolls,
+    bonus,
+    total,
+    isCrit,
+  };
 }
 
 function parseExpressionStr(expressionStr) {
