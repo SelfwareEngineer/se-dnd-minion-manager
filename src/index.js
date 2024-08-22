@@ -3,21 +3,25 @@ import "./style.css";
 import * as minions from "./modules/minions.js";
 import * as enemy from "./modules/enemy.js";
 
-let minionArr = [];
+const allMinions = {};
+const allEnemies = {};
 
-function spawnZombie(name) {
-  minionArr.push(minions.zombie(name));
+function spawnMinion(type, name) {
+  const newMinion = minions[type](name);
+  allMinions[newMinion.id] = newMinion;
 }
 
-function spawnSkeleton(name) {
-  minionArr.push(minions.skeleton(name));
+function spawnEnemy(name) {
+  const newEnemy = enemy.enemy(name);
+  allEnemies[newEnemy.id] = newEnemy;
 }
 
-function batchAttack(minionArr, target) {
+function batchAttack(allMinions, target) {
   let damageRecord = {};
   let totalDamage = {};
 
-  for (const minion of minionArr) {
+  for (const minionID in allMinions) {
+    const minion = allMinions[minionID];
     const minionDamage = minion.makeAttack(
       minion.attacks[minion.selectedAttack],
       target,
@@ -43,18 +47,15 @@ function batchAttack(minionArr, target) {
 }
 
 function runTests() {
-  const zombie = minions.zombie;
-  const minionArr = [];
-
   for (let i = 0; i < 8; i++) {
-    minionArr.push(zombie("Zombie" + (i + 1)));
+    spawnMinion("zombie", "Zombie" + (i + 1));
   }
 
   const steve = enemy.enemy("Steve");
 
   console.log(steve);
 
-  batchAttack(minionArr, steve);
+  batchAttack(allMinions, steve);
 }
 
 runTests();
