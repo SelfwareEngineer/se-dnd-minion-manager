@@ -31,6 +31,7 @@ const minion = () => ({
         target.maxArmorClass = attackRoll.total;
         return getDamage(attack.damage, isCrit);
       } else {
+        console.log(this.name + " missed.");
         target.minArmorClass = attackRoll.total + 1;
         return;
       }
